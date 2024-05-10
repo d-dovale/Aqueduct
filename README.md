@@ -4,6 +4,10 @@
 
 The "Aqueduct" project is designed to solve a unique problem of directing water through a grid-based system efficiently. The objective is to calculate the minimum cost of a supply path from a source station, visiting all specified bathhouses, and potentially ending at any of them. The challenge is facilitated through a grid where stations have varying heights, affecting the time and cost to move between them based on these differences.
 
+### Built With
+
+* ![Python]
+
 ## Algorithms Implemented
 
 ### Bellman-Ford Algorithm
@@ -125,3 +129,5 @@ The input should be in a text file `grid.txt` with the following format:
 ## Contributors
 
 Daniel Dovale - ddovale2004@gmail.com
+
+[Python]: https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white
