@@ -118,7 +118,7 @@ def find_optimal_path(graph, source, bathhouses):
 
 
 def main():
-    m, n, heights, source, bathhouses = parse_grid("./test_cases/TestCase10/grid.txt")
+    m, n, heights, source, bathhouses = parse_grid("./grid.txt")
 
     if m == 0 or n == 0:
         print("Grid is empty.")
