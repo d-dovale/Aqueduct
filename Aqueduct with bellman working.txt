@@ -1,0 +1,98 @@
+import math
+import itertools
+
+# Parse the grid data from grid.txt
+def parse_grid(filename):
+    with open(filename, 'r') as file:
+        lines = file.readlines()
+
+    # Read the grid size
+    m, n = map(int, lines[0].strip().split(','))
+
+    # Create a dictionary to store station heights
+    heights = {}
+    index = 1
+    for _ in range(m):
+        for _ in range(n):
+            height, x, y = map(int, lines[index].strip().split(','))
+            heights[(x, y)] = height
+            index += 1
+
+    # Read the source station
+    source = tuple(map(int, lines[index].strip().split(',')))
+    index += 1
+
+    # Parse bathhouses
+    B = []
+    while index < len(lines):
+        x, y = map(int, lines[index].strip().split(','))
+        B.append((x, y))
+        index += 1
+
+    return m, n, heights, source, B
+
+
+# Build the graph with edge weights
+def build_graph(m, n, heights):
+    graph = {}
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    
+    # Loop through each station in the grid
+    for x in range(m):
+        for y in range(n):
+            current = (x, y)
+            graph[current] = []
+            
+            # Check neighboring stations for valid connections
+            for dx, dy in directions:
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < m and 0 <= ny < n:
+                    neighbor = (nx, ny)
+                    height_diff = heights[neighbor] - heights[current]
+                    weight = max(-1, 1 + height_diff)
+                    graph[current].append((neighbor, weight))
+    
+    return graph
+
+
+# Bellman-Ford algorithm to find shortest paths
+def bellman_ford(graph, source):
+    distances = {node: math.inf for node in graph}
+    distances[source] = 0
+    
+    # Relax edges repeatedly
+    for _ in range(len(graph) - 1):
+        for node in graph:
+            for neighbor, weight in graph[node]:
+                if distances[node] + weight < distances[neighbor]:
+                    distances[neighbor] = distances[node] + weight
+    
+    # Optionally check for negative-weight cycles (not expected here)
+    for node in graph:
+        for neighbor, weight in graph[node]:
+            if distances[node] + weight < distances[neighbor]:
+                raise Exception("Negative-weight cycle detected")
+    
+    return distances
+
+
+# Main function to parse the grid, build the graph, and apply Bellman-Ford
+def main():
+    # Parse the grid data
+    m, n, heights, source, bath = parse_grid("./SimpleCase/grid.txt")
+    
+    # Build the graph
+    graph = build_graph(m, n, heights)
+    
+    # Apply the Bellman-Ford algorithm
+    distances = bellman_ford(graph, source)
+    
+    # Output distances for verification (or as desired)
+    print("Shortest paths from source:")
+    for node in distances:
+        print(f"To {node}: {distances[node]}")
+
+
+# Run the main function
+if __name__ == '__main__':
+    main()
